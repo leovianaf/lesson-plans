@@ -1,0 +1,37 @@
+# Read about fixtures at https://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+
+one:
+  csv_uuid: MyString
+  title: MyString
+  discipline: MyString
+  theme: MyString
+  bncc_skills: MyText
+  bncc_descriptions: MyText
+  grade: MyString
+  objectives: MyText
+  materials: MyText
+  steps: MyText
+  duration: MyString
+  url: MyString
+  url_key: MyString
+  bloom_taxonomy: MyString
+  full_content: MyText
+  evaluated: false
+
+two:
+  csv_uuid: MyString
+  title: MyString
+  discipline: MyString
+  theme: MyString
+  bncc_skills: MyText
+  bncc_descriptions: MyText
+  grade: MyString
+  objectives: MyText
+  materials: MyText
+  steps: MyText
+  duration: MyString
+  url: MyString
+  url_key: MyString
+  bloom_taxonomy: MyString
+  full_content: MyText
+  evaluated: false

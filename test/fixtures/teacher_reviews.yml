@@ -1,0 +1,13 @@
+# Read about fixtures at https://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+
+one:
+  user: one
+  lesson_plan: one
+  chosen_llm_evaluation: one
+  observation: MyText
+
+two:
+  user: two
+  lesson_plan: two
+  chosen_llm_evaluation: two
+  observation: MyText
