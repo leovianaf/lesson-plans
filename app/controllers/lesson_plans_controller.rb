@@ -3,11 +3,17 @@ class LessonPlansController < ApplicationController
   allow_unauthenticated_access only: []
 
   def evaluate_next
+    # Get discipline from URL params
+    @discipline = params[:discipline] || "Matemática"
+
     # Get first plan not evaluated
-    @lesson_plan = LessonPlan.find_by(evaluated: false)
+    @lesson_plan = LessonPlan.find_by(evaluated: false, discipline: @discipline)
+
+    # Count plans to update progress bar
+    @total_plans = LessonPlan.where(discipline: @discipline).count
+    @evaluated_count = LessonPlan.where(discipline: @discipline, evaluated: true).count
 
     if @lesson_plan
-      # Shuffle LLM evaluations to avoid bias
       @evaluations = @lesson_plan.llm_evaluations.shuffle
     end
   end
@@ -25,6 +31,7 @@ class LessonPlansController < ApplicationController
 
     @lesson_plan.update!(evaluated: true)
 
-    redirect_to root_path, notice: "Avaliação salva com sucesso!"
+    # Go back to the evaluation page with a success message
+    redirect_to root_path(discipline: @lesson_plan.discipline), notice: "Avaliação salva com sucesso!"
   end
 end

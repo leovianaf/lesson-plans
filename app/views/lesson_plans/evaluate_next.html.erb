@@ -1,80 +1,104 @@
-<% if notice %>
-  <div class="bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded relative mb-4 shadow-sm" role="alert">
-    <span class="block sm:inline"><%= notice %></span>
-  </div>
-<% end %>
+<div class="max-w-6xl mx-auto py-10 px-8">
 
-<div class="max-w-7xl mx-auto py-6 px-4 sm:px-6 lg:px-8">
+  <%# Header %>
+  <div class="flex justify-between items-start mb-10">
+    <div>
+      <h1 class="text-4xl font-extrabold text-slate-900 mb-1"><%= @discipline %></h1>
+      <p class="text-slate-600">Avalie planos de aula da disciplina</p>
+    </div>
 
-  <div class="flex justify-between items-center mb-8 border-b pb-4">
-    <h1 class="text-3xl font-extrabold text-slate-800">Curadoria de Planos de Aula</h1>
-    <div class="text-sm text-slate-600 flex items-center gap-4">
-      <span class="font-medium">Professor logado:</span> <%= Current.user&.email_address %>
-      <%= button_to "Sair", session_path, method: :delete, class: "text-red-600 hover:text-red-800 underline font-medium" %>
+    <div class="flex items-center gap-6">
+      <% if @lesson_plan %>
+        <a href="<%= @lesson_plan.url %>" target="_blank" class="bg-[#6B46C1] hover:bg-[#553c9a] text-white px-5 py-2.5 rounded-lg font-semibold shadow-sm transition">
+          Ver no Nova Escola
+        </a>
+      <% end %>
+
+      <div class="bg-white p-4 rounded-xl shadow-sm border border-slate-200 min-w-[250px]">
+        <div class="text-xs font-bold text-slate-500 mb-2">Planos Avaliados / Total de Planos</div>
+        <div class="w-full bg-slate-200 rounded-full h-2.5 mb-2">
+          <% percentage = @total_plans > 0 ? (@evaluated_count.to_f / @total_plans * 100) : 0 %>
+          <div class="bg-[#6B46C1] h-2.5 rounded-full" style="width: <%= percentage %>%"></div>
+        </div>
+        <div class="flex justify-between text-sm font-bold text-slate-800">
+          <span><%= @evaluated_count %></span>
+          <span class="text-slate-400"><%= @total_plans %></span>
+        </div>
+      </div>
     </div>
   </div>
 
   <% if @lesson_plan.nil? %>
-    <div class="bg-white shadow sm:rounded-lg p-10 text-center border-t-4 border-green-500">
-      <h2 class="text-3xl font-bold text-green-600 mb-2">🎉 Trabalho Concluído!</h2>
-      <p class="text-slate-700 text-lg">Todos os planos de aula da fila já foram avaliados. Excelente trabalho!</p>
+    <div class="bg-white shadow-sm rounded-xl p-16 text-center border border-slate-200">
+      <h2 class="text-3xl font-bold text-[#6B46C1] mb-2">Trabalho Concluído!</h2>
+      <p class="text-slate-600 text-lg">Todos os planos de <%= @discipline %> já foram avaliados.</p>
     </div>
 
   <% else %>
-    <div class="bg-white shadow-md sm:rounded-lg p-8 mb-8 border border-slate-200">
-      <div class="mb-2 flex items-center gap-2">
-        <span class="bg-blue-100 text-blue-800 text-xs font-semibold px-2.5 py-0.5 rounded">Aula Pendente</span>
-      </div>
-      <h2 class="text-2xl font-bold text-slate-900 mb-6"><%= @lesson_plan.title %></h2>
+    <%# Lesson Plan Details %>
+    <div class="bg-white shadow-sm rounded-2xl p-8 mb-8 border border-slate-100">
+      <h2 class="text-xl font-bold text-slate-900 mb-6">Título: <%= @lesson_plan.title %></h2>
 
-      <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
-        <div class="bg-slate-50 p-4 rounded-md border border-slate-100">
-          <p class="text-xs font-bold text-slate-500 uppercase tracking-wider">Disciplina / Tema</p>
-          <p class="mt-1 text-slate-900 font-medium"><%= @lesson_plan.discipline %> <span class="text-slate-400">|</span> <%= @lesson_plan.theme %></p>
+      <div class="flex flex-wrap gap-4 mb-6">
+        <div class="bg-slate-50 p-4 rounded-xl border border-slate-100 min-w-[180px] shadow-sm">
+          <p class="text-xs font-bold text-[#6B46C1] mb-1">Tema</p>
+          <p class="text-slate-800 font-semibold"><%= @lesson_plan.theme %></p>
         </div>
-        <div class="bg-slate-50 p-4 rounded-md border border-slate-100">
-          <p class="text-xs font-bold text-slate-500 uppercase tracking-wider">Objetivos</p>
-          <p class="mt-1 text-slate-900 text-sm"><%= @lesson_plan.objectives %></p>
+        <div class="bg-slate-50 p-4 rounded-xl border border-slate-100 min-w-[120px] shadow-sm">
+          <p class="text-xs font-bold text-[#6B46C1] mb-1">Série</p>
+          <p class="text-slate-800 font-semibold"><%= @lesson_plan.grade %></p>
+        </div>
+        <div class="bg-slate-50 p-4 rounded-xl border border-slate-100 min-w-[120px] shadow-sm">
+          <p class="text-xs font-bold text-[#6B46C1] mb-1">Duração</p>
+          <p class="text-slate-800 font-semibold"><%= @lesson_plan.duration %></p>
+        </div>
+        <div class="bg-slate-50 p-4 rounded-xl border border-slate-100 min-w-[180px] shadow-sm">
+          <p class="text-xs font-bold text-[#6B46C1] mb-1">Habilidades BNCC</p>
+          <p class="text-slate-800 font-semibold"><%= @lesson_plan.bncc_skills %></p>
         </div>
       </div>
 
-      <div class="mb-6">
-        <h3 class="text-lg font-bold text-slate-800 mb-2 border-b pb-2">Etapas da Aula</h3>
-        <div class="bg-slate-50 p-5 rounded-md text-slate-700 whitespace-pre-line text-sm border border-slate-200 shadow-inner">
+      <div class="bg-slate-50 p-5 rounded-xl border border-slate-100 mb-6 shadow-sm">
+        <p class="text-xs font-bold text-[#6B46C1] mb-2">Objetivos</p>
+        <p class="text-slate-800 font-semibold"><%= @lesson_plan.objectives %></p>
+      </div>
+
+      <div class="bg-slate-50 p-6 rounded-xl border border-slate-100 shadow-sm">
+        <p class="text-xs font-bold text-[#6B46C1] mb-3">Etapas</p>
+        <div class="text-slate-800 font-medium whitespace-pre-line leading-relaxed">
           <%= @lesson_plan.steps %>
         </div>
       </div>
     </div>
 
-    <div class="bg-slate-100 p-8 rounded-lg border border-slate-300 shadow-sm">
-      <h2 class="text-xl font-bold text-slate-800 mb-6 flex items-center gap-2">
-        Selecione a Melhor Avaliação
-      </h2>
+    <%# Evaluation Area %>
+    <div class="bg-[#EBEBEB] p-8 rounded-2xl shadow-inner">
+      <h3 class="text-lg font-bold text-slate-900 mb-6">Selecione a melhor avaliação para o plano acima</h3>
 
-      <%= form_with url: save_evaluation_path(@lesson_plan), method: :patch, class: "space-y-6" do |f| %>
+      <%= form_with url: save_evaluation_path(@lesson_plan), method: :patch, class: "" do |f| %>
 
-        <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
           <% @evaluations.each_with_index do |evaluation, index| %>
-            <label class="relative flex cursor-pointer rounded-xl border-2 bg-white p-5 shadow-sm hover:shadow-md transition-shadow focus:outline-none has-[:checked]:border-indigo-600 has-[:checked]:ring-1 has-[:checked]:ring-indigo-600">
+            <label class="relative flex cursor-pointer rounded-xl bg-white p-6 shadow-sm hover:shadow-md transition-all border-2 border-transparent has-[:checked]:border-[#6B46C1] has-[:checked]:ring-2 has-[:checked]:ring-[#6B46C1]/20">
               <%= f.radio_button :chosen_llm_evaluation_id, evaluation.id, class: "peer sr-only", required: true %>
               <div class="flex flex-col w-full">
-                <span class="block text-sm font-bold text-slate-500 uppercase tracking-wider mb-2">Opção <%= ("A".."Z").to_a[index] %></span>
-                <span class="flex items-center text-3xl font-extrabold text-indigo-600 mb-3">Nota: <%= evaluation.score %></span>
-                <% if evaluation.rationale.present? %>
-                  <p class="text-sm text-slate-600 border-t pt-3 mt-auto"><%= evaluation.rationale %></p>
-                <% end %>
+                <span class="block text-xs font-bold text-slate-500 mb-4">LLM <%= ("A".."Z").to_a[index] %></span>
+                <div class="flex items-baseline gap-3">
+                  <span class="text-2xl font-extrabold text-[#6B46C1]">Nota:</span>
+                  <span class="text-4xl font-extrabold text-[#6B46C1]"><%= evaluation.score %> / 10</span>
+                </div>
               </div>
             </label>
           <% end %>
         </div>
 
-        <div class="mt-8 bg-white p-4 rounded-lg border border-slate-200">
-          <%= f.label :observation, "Observação do Professor (Opcional)", class: "block text-sm font-bold text-slate-700 mb-2" %>
-          <%= f.text_area :observation, rows: 2, class: "block w-full rounded-md border-slate-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm p-3 border", placeholder: "Justifique sua escolha ou aponte falhas nas outras opções..." %>
+        <div class="bg-white p-6 rounded-xl shadow-sm border border-slate-200 mb-6">
+          <%= f.label :observation, "Observação (opcional)", class: "block text-xs font-bold text-slate-900 mb-2" %>
+          <%= f.text_area :observation, rows: 2, class: "resize-none block w-full rounded-lg border-slate-300 shadow-sm focus:border-[#6B46C1] focus:ring-[#6B46C1] sm:text-sm p-4 border", placeholder: "Alguma observação sobre a nota da LLM ou plano..." %>
         </div>
 
-        <div class="flex justify-end pt-4">
-          <%= f.submit "Salvar Escolha e Ir para o Próximo", class: "inline-flex justify-center rounded-lg border border-transparent bg-indigo-600 py-3 px-6 text-base font-medium text-white shadow-sm hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 cursor-pointer transition-colors" %>
+        <div class="flex justify-end">
+          <%= f.submit "Salvar e Ir para o próximo", class: "bg-[#6B46C1] hover:bg-[#553c9a] text-white px-6 py-3 rounded-lg font-semibold shadow-md transition cursor-pointer" %>
         </div>
       <% end %>
     </div>
