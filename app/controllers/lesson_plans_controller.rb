@@ -34,4 +34,14 @@ class LessonPlansController < ApplicationController
     # Go back to the evaluation page with a success message
     redirect_to root_path(discipline: @lesson_plan.discipline), notice: "Avaliação salva com sucesso!"
   end
+
+  def history
+    # Get all reviews of the current user, including associated lesson plans and evaluations, ordered by most recent
+    @reviews = Current.user.teacher_reviews.includes(:lesson_plan, :chosen_llm_evaluation).order(created_at: :desc)
+
+    # If there's a search query, filter reviews by lesson plan title
+    if params[:query].present?
+      @reviews = @reviews.joins(:lesson_plan).where("lesson_plans.title ILIKE ?", "%#{params[:query]}%")
+    end
+  end
 end

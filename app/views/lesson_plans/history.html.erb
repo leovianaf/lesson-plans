@@ -1,0 +1,124 @@
+<div class="max-w-6xl mx-auto py-10 px-8">
+
+  <%# Header %>
+  <div class="mb-10">
+    <h1 class="text-4xl font-extrabold text-slate-900 mb-2">Histórico de Planos</h1>
+    <p class="text-slate-600 text-lg">Planos de aula já avaliados aparecem abaixo</p>
+  </div>
+
+  <%# Search Bar %>
+  <%= form_with url: history_path, method: :get, class: "mb-8 flex gap-4 bg-white p-3 rounded-2xl shadow-sm border border-slate-200" do |f| %>
+    <div class="flex-1 relative">
+      <div class="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
+        <svg class="h-5 w-5 text-slate-400" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" /></svg>
+      </div>
+      <%= f.text_field :query, value: params[:query], placeholder: "Buscar plano pelo título...", class: "block w-full pl-11 pr-4 py-3 rounded-xl border-none focus:ring-0 text-slate-800 placeholder-slate-400 bg-transparent" %>
+    </div>
+
+    <%= f.submit "Buscar", class: "bg-[#6B46C1] hover:bg-[#553c9a] text-white px-8 py-3 rounded-xl font-semibold shadow-sm transition cursor-pointer" %>
+
+    <% if params[:query].present? %>
+      <%= link_to "Limpar", history_path, class: "bg-slate-100 hover:bg-slate-200 text-slate-600 px-6 py-3 rounded-xl font-semibold transition flex items-center" %>
+    <% end %>
+  <% end %>
+
+  <%# Lesson Plan cards %>
+  <div class="flex flex-col gap-4">
+    <% if @reviews.any? %>
+      <% @reviews.each do |review| %>
+
+        <%# Details creates a toggle card %>
+        <details class="group bg-white rounded-2xl shadow-sm border border-slate-200 overflow-hidden [&_summary::-webkit-details-marker]:hidden">
+
+          <%# Card closed %>
+          <summary class="flex items-center justify-between p-6 cursor-pointer hover:bg-slate-50 transition-colors list-none">
+            <div class="flex items-center gap-6">
+
+              <div class="w-12 h-12 rounded-full bg-green-100 text-green-600 flex items-center justify-center shrink-0">
+                <svg class="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M4.5 12.75l6 6 9-13.5" /></svg>
+              </div>
+
+              <div>
+                <h3 class="text-lg font-bold text-slate-900"><%= review.lesson_plan.title %></h3>
+                <div class="flex items-center gap-3 text-sm text-slate-500 mt-1">
+                  <span class="bg-slate-100 px-2.5 py-1 rounded-md font-semibold"><%= review.lesson_plan.discipline %></span>
+                  <span>Avaliado em <%= review.created_at.strftime("%d/%m/%Y") %></span>
+                </div>
+              </div>
+            </div>
+
+            <div class="flex items-center gap-8">
+              <div class="text-right">
+                <p class="text-xs font-bold text-slate-400 uppercase tracking-wider mb-1">Nota Escolhida</p>
+                <p class="text-3xl font-extrabold text-[#6B46C1]"><%= review.chosen_llm_evaluation.score %> <span class="text-lg text-slate-400 font-bold">/ 10</span></p>
+              </div>
+
+              <%# Toggle lesson plan details %>
+              <div class="w-8 h-8 rounded-full bg-slate-100 flex items-center justify-center text-slate-500 group-open:rotate-180 transition-transform duration-300">
+                <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M19.5 8.25l-7.5 7.5-7.5-7.5" /></svg>
+              </div>
+            </div>
+          </summary>
+
+          <%# Hidden info inside the card %>
+          <div class="p-8 border-t border-slate-100 bg-[#FAFAFA]">
+
+            <h4 class="text-sm font-bold text-[#6B46C1] mb-2 uppercase tracking-wide">Sua Observação</h4>
+            <div class="bg-white p-5 rounded-xl border border-slate-200 shadow-sm mb-6 text-slate-700">
+              <%= review.observation.presence || "Nenhuma observação registrada pelo professor." %>
+            </div>
+
+            <h4 class="text-sm font-bold text-[#6B46C1] mb-3 uppercase tracking-wide">Detalhes do Plano</h4>
+
+            <%# Bloco 1: Tema (Largura Total) %>
+            <div class="bg-white p-4 rounded-xl border border-slate-200 shadow-sm mb-4 w-full">
+              <p class="text-xs font-bold text-[#6B46C1] mb-1">Tema</p>
+              <p class="text-slate-800 font-semibold"><%= review.lesson_plan.theme %></p>
+            </div>
+
+            <%# Bloco 2: Os 4 campos dividindo a mesma linha (Grid de 4 colunas) %>
+            <div class="grid grid-cols-1 lg:grid-cols-4 gap-4 mb-4">
+              <div class="bg-white p-4 rounded-xl border border-slate-200 shadow-sm">
+                <p class="text-xs font-bold text-[#6B46C1] mb-1">Série</p>
+                <p class="text-slate-800 font-semibold"><%= review.lesson_plan.grade %></p>
+              </div>
+              <div class="bg-white p-4 rounded-xl border border-slate-200 shadow-sm">
+                <p class="text-xs font-bold text-[#6B46C1] mb-1">Duração</p>
+                <p class="text-slate-800 font-semibold"><%= review.lesson_plan.duration %></p>
+              </div>
+              <div class="bg-white p-4 rounded-xl border border-slate-200 shadow-sm">
+                <p class="text-xs font-bold text-[#6B46C1] mb-1">Modelo Vencedor</p>
+                <p class="text-slate-800 font-semibold"><%= review.chosen_llm_evaluation.ai_model_name %></p>
+              </div>
+              <div class="bg-white p-4 rounded-xl border border-slate-200 shadow-sm">
+                <p class="text-xs font-bold text-[#6B46C1] mb-1">Habilidades BNCC</p>
+                <p class="text-slate-800 font-semibold"><%= review.lesson_plan.bncc_skills %></p>
+              </div>
+            </div>
+
+            <%# Bloco 3: Objetivos (Largura Total) %>
+            <div class="bg-white p-4 rounded-xl border border-slate-200 shadow-sm mb-6 w-full">
+              <p class="text-xs font-bold text-[#6B46C1] mb-2">Objetivos</p>
+              <p class="text-slate-800 font-semibold whitespace-pre-line leading-relaxed"><%= review.lesson_plan.objectives %></p>
+            </div>
+
+            <div class="mt-6 flex justify-end">
+              <a href="<%= review.lesson_plan.url %>" target="_blank" class="text-sm font-bold text-[#6B46C1] hover:text-[#553c9a] hover:underline flex items-center gap-1">
+                Ver plano original no Nova Escola
+                <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" /></svg>
+              </a>
+            </div>
+
+          </div>
+        </details>
+      <% end %>
+    <% else %>
+      <%# Empty State %>
+      <div class="bg-white rounded-2xl shadow-sm border border-slate-200 p-16 text-center">
+        <svg class="w-16 h-16 text-slate-300 mx-auto mb-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5"><path stroke-linecap="round" stroke-linejoin="round" d="M19.5 14.25v-2.625a3.375 3.375 0 00-3.375-3.375h-1.5A1.125 1.125 0 0113.5 7.125v-1.5a3.375 3.375 0 00-3.375-3.375H8.25m0 12.75h7.5m-7.5 3H12M10.5 2.25H5.625c-.621 0-1.125.504-1.125 1.125v17.25c0 .621.504 1.125 1.125 1.125h12.75c.621 0 1.125-.504 1.125-1.125V11.25a9 9 0 00-9-9z" /></svg>
+        <h3 class="text-xl font-bold text-slate-900 mb-2">Nenhum plano encontrado</h3>
+        <p class="text-slate-500">Você ainda não avaliou planos ou a sua busca não retornou resultados.</p>
+      </div>
+    <% end %>
+  </div>
+</div>
