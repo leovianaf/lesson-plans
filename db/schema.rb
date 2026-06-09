@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2026_02_28_174000) do
+ActiveRecord::Schema[8.1].define(version: 2026_06_08_220000) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
 
@@ -40,10 +40,17 @@ ActiveRecord::Schema[8.1].define(version: 2026_02_28_174000) do
     t.string "ai_model_name"
     t.datetime "created_at", null: false
     t.bigint "lesson_plan_id", null: false
+    t.string "lesson_plan_uuid"
     t.text "rationale"
-    t.integer "score"
+    t.decimal "score", precision: 5, scale: 2
+    t.decimal "score_d1", precision: 5, scale: 2
+    t.decimal "score_d2", precision: 5, scale: 2
+    t.decimal "score_d3", precision: 5, scale: 2
+    t.decimal "score_d4", precision: 5, scale: 2
+    t.decimal "score_d5", precision: 5, scale: 2
     t.datetime "updated_at", null: false
     t.index ["lesson_plan_id"], name: "index_llm_evaluations_on_lesson_plan_id"
+    t.index ["lesson_plan_uuid"], name: "index_llm_evaluations_on_lesson_plan_uuid"
   end
 
   create_table "sessions", force: :cascade do |t|
