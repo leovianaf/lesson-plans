@@ -1,8 +1,12 @@
 require "test_helper"
 
 class LessonPlansControllerTest < ActionDispatch::IntegrationTest
+  setup do
+    sign_in_as users(:one)
+  end
+
   test "should get evaluate_next" do
-    get lesson_plans_evaluate_next_url
+    get root_url
     assert_response :success
   end
 end

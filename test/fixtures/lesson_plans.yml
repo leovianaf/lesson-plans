@@ -1,7 +1,7 @@
 # Read about fixtures at https://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
 
 one:
-  csv_uuid: MyString
+  csv_uuid: lesson-plan-001
   title: MyString
   discipline: MyString
   theme: MyString
@@ -19,7 +19,7 @@ one:
   evaluated: false
 
 two:
-  csv_uuid: MyString
+  csv_uuid: lesson-plan-002
   title: MyString
   discipline: MyString
   theme: MyString
